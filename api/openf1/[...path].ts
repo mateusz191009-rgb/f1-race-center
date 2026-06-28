@@ -77,9 +77,17 @@ export default async function handler(req: any, res: any) {
     const rawQuery = qIndex === -1 ? '' : rawUrl.slice(qIndex + 1)
 
     const endpoint = pathname.replace(/^\/api\/openf1/, '')
+    // Vercel names the catch-all param after the filename `[...path]`, so the key
+    // it injects is the LITERAL `...path` (dots included) — not `path`. Strip any
+    // segment whose key is `path` or `...path` (decoded), keep everything else
+    // byte-for-byte so OpenF1 operator keys like `date>=` survive.
     const cleanedQuery = rawQuery
       .split('&')
-      .filter((seg) => seg && seg.split('=')[0] !== 'path')
+      .filter((seg) => {
+        if (!seg) return false
+        const key = decodeURIComponent(seg.split('=')[0])
+        return key !== 'path' && key !== '...path'
+      })
       .join('&')
 
     const upstream =
