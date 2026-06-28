@@ -95,20 +95,6 @@ export default async function handler(req: any, res: any) {
       (endpoint.startsWith('/') ? endpoint : '/' + endpoint) +
       (cleanedQuery ? '?' + cleanedQuery : '')
 
-    // Temporary diagnostic: GET /api/openf1/__debug shows how the request is parsed.
-    if (endpoint === '/__debug' || endpoint === '__debug') {
-      res.statusCode = 200
-      res.setHeader('content-type', 'application/json')
-      res.end(
-        JSON.stringify(
-          { rawUrl, pathname, rawQuery, endpoint, cleanedQuery, upstream, query: req.query },
-          null,
-          2,
-        ),
-      )
-      return
-    }
-
     const token = await getToken()
     const headers: Record<string, string> = { accept: 'application/json' }
     if (token) headers.Authorization = `Bearer ${token}`
