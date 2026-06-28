@@ -62,10 +62,30 @@ async function getToken(): Promise<string | null> {
 
 export default async function handler(req: any, res: any) {
   try {
-    // Strip the `/api/openf1` prefix to get the upstream path + query string.
+    // Reconstruct the upstream URL from the incoming request.
+    //
+    // The catch-all route is named `[...path]`, so Vercel injects its captured
+    // segments back into the query string as `path=<segment>`. OpenF1 treats
+    // EVERY query parameter as a column filter, so a stray `path=sessions` matches
+    // zero rows and the API returns 404 "No results found". We must strip it.
+    //
+    // We keep the rest of the query string byte-for-byte (NOT re-encoded) so that
+    // OpenF1 operator keys like `date>=` / `date<` survive intact.
     const rawUrl: string = req.url || ''
-    const suffix = rawUrl.replace(/^\/api\/openf1/, '')
-    const upstream = 'https://api.openf1.org/v1' + (suffix.startsWith('/') ? suffix : '/' + suffix)
+    const qIndex = rawUrl.indexOf('?')
+    const pathname = qIndex === -1 ? rawUrl : rawUrl.slice(0, qIndex)
+    const rawQuery = qIndex === -1 ? '' : rawUrl.slice(qIndex + 1)
+
+    const endpoint = pathname.replace(/^\/api\/openf1/, '')
+    const cleanedQuery = rawQuery
+      .split('&')
+      .filter((seg) => seg && seg.split('=')[0] !== 'path')
+      .join('&')
+
+    const upstream =
+      'https://api.openf1.org/v1' +
+      (endpoint.startsWith('/') ? endpoint : '/' + endpoint) +
+      (cleanedQuery ? '?' + cleanedQuery : '')
 
     const token = await getToken()
     const headers: Record<string, string> = { accept: 'application/json' }
