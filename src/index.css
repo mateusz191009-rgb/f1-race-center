@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 800px at 80% -10%, rgba(225, 6, 0, 0.12), transparent 60%),
+    radial-gradient(900px 700px at -10% 110%, rgba(47, 123, 255, 0.1), transparent 55%),
+    #07070b;
+  color: theme('colors.f1.ink');
+  font-family: theme('fontFamily.body');
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+@layer components {
+  .glass {
+    @apply rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  .glass-tight {
+    @apply rounded-xl border border-white/10 bg-white/[0.05] backdrop-blur-md;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold tracking-wide;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5
+           text-sm font-semibold text-f1-ink transition hover:bg-white/10 active:scale-[0.97] disabled:opacity-40
+           disabled:pointer-events-none;
+  }
+
+  .btn-primary {
+    @apply border-f1-red/60 bg-f1-red/20 text-white hover:bg-f1-red/30;
+  }
+
+  .label {
+    @apply text-[10px] uppercase tracking-[0.18em] text-f1-mute;
+  }
+
+  .heading {
+    font-family: theme('fontFamily.display');
+    @apply font-bold tracking-wide;
+  }
+}
+
+/* Custom slim scrollbars */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+.scroll-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+}
+.scroll-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Safety car / flag banner diagonal stripes */
+.sc-stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.85) 0 14px,
+    rgba(255, 208, 0, 0.95) 14px 28px
+  );
+  background-size: 56px 56px;
+}
+.red-stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(120, 0, 0, 0.95) 0 14px,
+    rgba(255, 34, 51, 0.95) 14px 28px
+  );
+  background-size: 56px 56px;
+}
+
+@keyframes radarSweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.radar-sweep {
+  animation: radarSweep 3.5s linear infinite;
+  transform-origin: center;
+}
+@keyframes rainPulse {
+  0% {
+    r: 4;
+    opacity: 0.7;
+  }
+  100% {
+    r: 46;
+    opacity: 0;
+  }
+}
+
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  outline: none;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #e10600;
+  box-shadow: 0 0 0 4px rgba(225, 6, 0, 0.25);
+  cursor: pointer;
+}
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: #e10600;
+  cursor: pointer;
+}
